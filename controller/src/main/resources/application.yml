@@ -1,0 +1,100 @@
+#服务端口
+server:
+  port: 9091
+  tomcat:
+    basedir: /home/saysky/temp
+
+#mysql和阿里druid配置
+spring:
+  devtools:
+    restart:
+      enabled: true
+  application:
+    name: captcha    #指定应用的名称建议使用小写
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      url: jdbc:mysql://localhost:3306/commerce?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&autoReconnectForPools=true&zeroDateTimeBehavior=convertToNull
+      username: root
+      password: q123456789
+      driver-class-name: com.mysql.jdbc.Driver
+      # 下面为连接池的补充设置，应用到上面所有数据源中
+      # 初始化大小，最小，最大
+      initialSize: 10
+      minIdle: 4
+      maxActive: 200
+      # 配置获取连接等待超时的时间
+      maxWait: 60000
+      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      timeBetweenEvictionRunsMillis: 60000
+      # 配置一个连接在池中最小生存的时间，单位是毫秒
+      minEvictableIdleTimeMillis: 30000
+      #validationQuery: select 'x'
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      # 打开PSCache，并且指定每个连接上PSCache的大小
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 20
+      # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+      filters: stat,wall,slf4j
+      # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+      # 合并多个DruidDataSource的监控数据
+      useGlobalDataSourceStat: true
+  redis:
+    database: 2 # 2开发环境  1测试环境
+    # Redis服务器地址
+    host: localhost
+    # Redis服务器连接端口
+    port: 6379
+    # Redis服务器连接密码（默认为空）
+    password: q123456789
+    jedis:
+      pool:
+        # 连接池最大连接数（使用负值表示没有限制）
+        max-active: 1000
+        # 连接池中的最小空闲连接
+        min-idle: 8
+        # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        #max-wait: -1
+        # 连接池中的最大空闲连接
+        max-idle: 10
+    # 连接超时时间（毫秒）
+    #timeout: 2000
+  # JSON 转换工具类
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+  # 文件上传大小限制
+  servlet:
+    multipart:
+      #配置文件传输
+      enabled: true
+      file-size-threshold: 0
+      #单个数据的大小
+      max-file-size: 100MB
+      #总数据的大小
+      max-request-size: 100MB
+
+# Mybatis 插件
+mybatis:
+  type-aliases-package: com.ishop.entity
+  mapper-locations: classpath:mapper/*.xml,mapper/*/*.xml
+  configuration:
+    #配置项：开启下划线到驼峰的自动转换. 作用：将数据库字段根据驼峰规则自动注入到对象属性。
+    map-underscore-to-camel-case: true
+
+# 通用 Mapper 配置
+mapper:
+  mappers:
+  - tk.mybatis.mapper.common.Mapper
+  not-empty: false
+  identity: MYSQL
+
+#pagehelper分页插件
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
